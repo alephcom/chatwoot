@@ -58,15 +58,18 @@ describe('ConversationCard', () => {
     expect(wrapper.findComponent({ name: 'CardLabels' }).exists()).toBe(false);
   });
 
-  it('shows the title as the primary line and keeps the contact name', () => {
+  it('shows the title as the primary line and the contact on the second line', () => {
     const wrapper = mountComponent(
       { title: 'Billing question' },
       {},
       { enable_conversation_title: true }
     );
 
-    expect(wrapper.find('h4').text()).toContain('Billing question');
-    expect(wrapper.find('h4').text()).toContain('Jane Doe');
+    expect(wrapper.find('h4').text()).toBe('Billing question');
+    expect(wrapper.find('p').text()).toBe('Jane Doe');
+    expect(wrapper.findComponent({ name: 'MessagePreview' }).exists()).toBe(
+      false
+    );
   });
 
   it('renders the existing contact line when titles are disabled or blank', () => {

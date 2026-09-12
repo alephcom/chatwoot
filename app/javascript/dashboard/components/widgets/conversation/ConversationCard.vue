@@ -190,15 +190,17 @@ watch(
           { capitalize: !showConversationTitle },
         ]"
       >
-        <template v-if="showConversationTitle">
-          {{ `${chat.title} · ${currentContact.name}` }}
-        </template>
-        <template v-else>
-          {{ currentContact.name }}
-        </template>
+        {{ showConversationTitle ? chat.title : currentContact.name }}
       </h4>
+      <p
+        v-if="showConversationTitle && !voiceCallData.status"
+        key="conversation-title-contact"
+        class="text-n-slate-11 text-sm my-0 mx-2 leading-6 h-6 flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap"
+      >
+        {{ currentContact.name }}
+      </p>
       <VoiceCallStatus
-        v-if="voiceCallData.status"
+        v-else-if="voiceCallData.status"
         key="voice-status-row"
         :status="voiceCallData.status"
         :direction="voiceCallData.direction"

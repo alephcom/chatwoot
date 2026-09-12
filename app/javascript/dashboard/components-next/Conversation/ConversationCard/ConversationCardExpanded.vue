@@ -159,15 +159,17 @@ const selectedModel = computed({
         class="text-heading-3 my-0 truncate text-n-slate-12 font-medium flex-shrink-0"
         :class="showConversationTitle ? 'w-64' : 'w-32 capitalize'"
       >
-        <template v-if="showConversationTitle">
-          {{ `${chat.title} · ${currentContact.name}` }}
-        </template>
-        <template v-else>
-          {{ currentContact.name }}
-        </template>
+        {{ showConversationTitle ? chat.title : currentContact.name }}
       </h4>
 
+      <span
+        v-if="showConversationTitle"
+        class="text-body-main text-n-slate-11 truncate min-w-0"
+      >
+        {{ currentContact.name }}
+      </span>
       <CardContent
+        v-else
         :last-message="lastMessageInChat"
         :voice-call-status="voiceCallData.status"
         :voice-call-direction="voiceCallData.direction"
