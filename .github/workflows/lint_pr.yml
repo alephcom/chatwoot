@@ -1,23 +1,26 @@
-# ref: https://github.com/amannn/action-semantic-pull-request
-# ensure PR title is in semantic format
-
-name: "Lint PR"
-
-on:
-  pull_request_target:
-    types:
-      - opened
-      - edited
-      - synchronize
-
-permissions:
-  pull-requests: read
-
-jobs:
-  main:
-    name: Validate PR title
-    runs-on: ubuntu-latest
-    steps:
-      - uses: amannn/action-semantic-pull-request@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+# Disabled for the alephcom fork: Enforces Conventional Commit PR titles for external contributors - not needed internally.
+# This is Chatwoot-internal/community CI, not needed for a private production fork.
+# Uncomment to restore.
+# # ref: https://github.com/amannn/action-semantic-pull-request
+# # ensure PR title is in semantic format
+# 
+# name: "Lint PR"
+# 
+# on:
+#   pull_request_target:
+#     types:
+#       - opened
+#       - edited
+#       - synchronize
+# 
+# permissions:
+#   pull-requests: read
+# 
+# jobs:
+#   main:
+#     name: Validate PR title
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: amannn/action-semantic-pull-request@v5
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
