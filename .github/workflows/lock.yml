@@ -1,32 +1,29 @@
-# Disabled for the alephcom fork: Locks old issues/PRs for public community hygiene - not applicable internally.
-# This is Chatwoot-internal/community CI, not needed for a private production fork.
-# Uncomment to restore.
-# # We often have cases where users would comment over stale closed Github Issues.
-# # This creates unnecessary noise for the original reporter and makes it harder for triaging.
-# # This action locks the closed threads once it is inactive for over a month.
-# 
-# name: 'Lock Threads'
-# 
-# on:
-#   schedule:
-#     - cron: '0 * * * *'
-#   workflow_dispatch:
-# 
-# permissions:
-#   issues: write
-#   pull-requests: write
-# 
-# concurrency:
-#   group: lock
-# 
-# jobs:
-#   action:
-#     runs-on: ubuntu-latest
-#     if: ${{ github.repository == 'chatwoot/chatwoot' }}
-#     steps:
-#       - uses: dessant/lock-threads@v3
-#         with: 
-#           issue-inactive-days: '30'
-#           issue-lock-reason: 'resolved'
-#           pr-inactive-days: '30'
-#           pr-lock-reason: 'resolved'
+# We often have cases where users would comment over stale closed Github Issues.
+# This creates unnecessary noise for the original reporter and makes it harder for triaging.
+# This action locks the closed threads once it is inactive for over a month.
+
+name: 'Lock Threads'
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: lock
+
+jobs:
+  action:
+    runs-on: ubuntu-latest
+    if: ${{ github.repository == 'chatwoot/chatwoot' }}
+    steps:
+      - uses: dessant/lock-threads@v3
+        with: 
+          issue-inactive-days: '30'
+          issue-lock-reason: 'resolved'
+          pr-inactive-days: '30'
+          pr-lock-reason: 'resolved'
