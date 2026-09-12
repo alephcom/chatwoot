@@ -13,6 +13,11 @@ properties:
   uuid:
     type: string
     description: UUID of the conversation
+  title:
+    type:
+      - string
+      - 'null'
+    description: Editable title of the conversation
   additional_attributes:
     type: object
     description: The object containing additional attributes related to the conversation

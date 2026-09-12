@@ -22,6 +22,7 @@ RSpec.describe Conversations::EventDataPresenter do
         labels: [],
         inbox_id: conversation.inbox_id,
         status: conversation.status,
+        title: nil,
         contact_inbox: conversation.contact_inbox,
         can_reply: conversation.can_reply?,
         channel: conversation.inbox.channel_type,

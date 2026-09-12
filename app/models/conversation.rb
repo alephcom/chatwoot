@@ -16,6 +16,7 @@
 #  snoozed_until          :datetime
 #  status                 :integer          default("open"), not null
 #  status_changed_at      :datetime
+#  title                  :string
 #  uuid                   :uuid             not null
 #  waiting_since          :datetime
 #  created_at             :datetime         not null
@@ -137,6 +138,7 @@ class Conversation < ApplicationRecord
   before_save :set_status_changed_at
   before_create :determine_conversation_status
   before_create :ensure_waiting_since
+  before_create :set_title_from_mail_subject
 
   after_update_commit :execute_after_update_commit_callbacks
   after_create_commit :notify_conversation_creation
@@ -300,6 +302,12 @@ class Conversation < ApplicationRecord
     self.waiting_since = created_at
   end
 
+  def set_title_from_mail_subject
+    return if title.present? || !inbox.enable_conversation_title? || !inbox.email?
+
+    self.title = additional_attributes['mail_subject'].presence
+  end
+
   def validate_additional_attributes
     self.additional_attributes = {} unless additional_attributes.is_a?(Hash)
   end
@@ -348,7 +356,7 @@ class Conversation < ApplicationRecord
 
   def list_of_keys
     %w[team_id assignee_id assignee_agent_bot_id status snoozed_until custom_attributes label_list waiting_since
-       first_reply_created_at priority]
+       first_reply_created_at priority title]
   end
 
   def allowed_keys?

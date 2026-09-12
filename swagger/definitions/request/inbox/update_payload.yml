@@ -64,6 +64,10 @@ properties:
     type: boolean
     description: Enable Auto Assignment.
     example: true
+  enable_conversation_title:
+    type: boolean
+    description: Enable editable conversation titles.
+    example: false
   working_hours_enabled:
     type: boolean
     description: Enable working hours.

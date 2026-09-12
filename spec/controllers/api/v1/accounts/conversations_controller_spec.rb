@@ -347,7 +347,7 @@ RSpec.describe 'Conversations API', type: :request do
 
   describe 'PATCH /api/v1/accounts/{account.id}/conversations/:id' do
     let(:conversation) { create(:conversation, account: account) }
-    let(:params) { { priority: 'high' } }
+    let(:params) { { priority: 'high', title: 'Billing question' } }
 
     context 'when it is an unauthenticated user' do
       it 'returns unauthorized' do
@@ -355,6 +355,7 @@ RSpec.describe 'Conversations API', type: :request do
               params: params
 
         expect(response).to have_http_status(:unauthorized)
+        expect(conversation.reload.title).to be_nil
       end
     end
 
@@ -369,6 +370,7 @@ RSpec.describe 'Conversations API', type: :request do
               as: :json
 
         expect(response).to have_http_status(:unauthorized)
+        expect(conversation.reload.title).to be_nil
       end
 
       it 'updates the conversation if you are an administrator' do
@@ -380,6 +382,7 @@ RSpec.describe 'Conversations API', type: :request do
         expect(response).to have_http_status(:success)
         expect(response).to conform_schema(200)
         expect(JSON.parse(response.body, symbolize_names: true)[:priority]).to eq('high')
+        expect(JSON.parse(response.body, symbolize_names: true)[:title]).to eq('Billing question')
       end
 
       it 'updates the conversation if you are an agent with access to inbox' do
@@ -391,6 +394,7 @@ RSpec.describe 'Conversations API', type: :request do
 
         expect(response).to have_http_status(:success)
         expect(JSON.parse(response.body, symbolize_names: true)[:priority]).to eq('high')
+        expect(conversation.reload.title).to eq('Billing question')
       end
     end
   end

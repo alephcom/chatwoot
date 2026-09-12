@@ -3,6 +3,7 @@ json.payload do
     json.array! @result[:conversations] do |conversation|
       json.id conversation.display_id
       json.account_id conversation.account_id
+      json.title conversation.title
       json.created_at conversation.created_at.to_i
       json.message do
         first_message = conversation.messages.first

@@ -10,7 +10,7 @@ class Conversations::EventDataPresenter < SimpleDelegator
       messages: push_messages,
       labels: label_list,
       meta: push_meta,
-      status: status,
+      status: status, title: title,
       custom_attributes: custom_attributes,
       snoozed_until: snoozed_until,
       unread_count: unread_incoming_messages.count,

@@ -18,6 +18,12 @@ requestBody:
             enum: ['urgent', 'high', 'medium', 'low', 'none']
             description: 'The priority of the conversation'
             example: 'high'
+          title:
+            type:
+              - string
+              - 'null'
+            description: 'The title of the conversation'
+            example: 'Refund request'
           sla_policy_id:
             type: number
             description: 'The ID of the SLA policy (Available only in Enterprise edition)'

@@ -48,6 +48,50 @@ RSpec.describe Conversation do
     end
   end
 
+  describe 'conversation title initialization' do
+    let(:account) { create(:account) }
+    let(:inbox) { create(:inbox, :with_email, account: account, enable_conversation_title: true) }
+    let(:additional_attributes) { { 'mail_subject' => 'Billing question' } }
+
+    it 'sets the title from the email subject when enabled' do
+      conversation = create(:conversation, account: account, inbox: inbox, additional_attributes: additional_attributes)
+
+      expect(conversation.title).to eq('Billing question')
+    end
+
+    it 'does not set the title when the inbox setting is disabled' do
+      inbox.update!(enable_conversation_title: false)
+      conversation = create(:conversation, account: account, inbox: inbox, additional_attributes: additional_attributes)
+
+      expect(conversation.title).to be_nil
+    end
+
+    it 'does not set the title for a non-email inbox' do
+      widget_inbox = create(:inbox, account: account, enable_conversation_title: true)
+      conversation = create(:conversation, account: account, inbox: widget_inbox, additional_attributes: additional_attributes)
+
+      expect(conversation.title).to be_nil
+    end
+
+    it 'does not set the title from a blank email subject' do
+      conversation = create(:conversation, account: account, inbox: inbox, additional_attributes: { 'mail_subject' => '' })
+
+      expect(conversation.title).to be_nil
+    end
+
+    it 'preserves an explicitly supplied title' do
+      conversation = create(
+        :conversation,
+        account: account,
+        inbox: inbox,
+        title: 'Custom title',
+        additional_attributes: additional_attributes
+      )
+
+      expect(conversation.title).to eq('Custom title')
+    end
+  end
+
   describe '.after_create' do
     let(:account) { create(:account) }
     let(:agent) { create(:user, email: 'agent1@example.com', account: account) }
@@ -220,6 +264,15 @@ RSpec.describe Conversation do
 
     it 'will run conversation_updated event for conversation language changes' do
       conversation.update!(additional_attributes: { 'conversation_language' => 'es' })
+      changed_attributes = conversation.previous_changes
+
+      expect(Rails.configuration.dispatcher).to have_received(:dispatch)
+        .with(described_class::CONVERSATION_UPDATED, kind_of(Time), conversation: conversation, notifiable_assignee_change: false,
+                                                                    changed_attributes: changed_attributes, performed_by: nil)
+    end
+
+    it 'will run conversation_updated event for title changes' do
+      conversation.update!(title: 'Updated title')
       changed_attributes = conversation.previous_changes
 
       expect(Rails.configuration.dispatcher).to have_received(:dispatch)
@@ -698,6 +751,7 @@ RSpec.describe Conversation do
         last_activity_at: conversation.last_activity_at.to_i,
         inbox_id: conversation.inbox_id,
         status: conversation.status,
+        title: nil,
         contact_inbox: conversation.contact_inbox,
         timestamp: conversation.last_activity_at.to_i,
         can_reply: true,

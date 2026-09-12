@@ -7,7 +7,7 @@ class Inbox::EventDataPresenter < SimpleDelegator
 
       # Auto Assignment config
       auto_assignment_config: auto_assignment_config,
-      enable_auto_assignment: enable_auto_assignment,
+      enable_auto_assignment: enable_auto_assignment, enable_conversation_title: enable_conversation_title,
 
       # Feature flag for message events
       enable_email_collect: enable_email_collect,

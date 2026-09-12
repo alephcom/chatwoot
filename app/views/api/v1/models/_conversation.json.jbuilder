@@ -2,6 +2,7 @@
 
 json.id conversation.display_id
 json.uuid conversation.uuid
+json.title conversation.title
 json.created_at conversation.created_at.to_i
 json.contact do
   json.id conversation.contact.id
