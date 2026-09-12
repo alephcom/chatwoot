@@ -152,6 +152,13 @@ export const mutations = {
     }
   },
 
+  [types.UPDATE_CONVERSATION_TITLE](_state, { conversationId, title }) {
+    const conversation = getConversationById(_state)(conversationId);
+    if (conversation) {
+      conversation.title = title;
+    }
+  },
+
   [types.CHANGE_CONVERSATION_STATUS](
     _state,
     { conversationId, status, snoozedUntil }

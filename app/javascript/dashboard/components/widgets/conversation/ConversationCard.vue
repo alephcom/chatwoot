@@ -38,6 +38,9 @@ const hovered = ref(false);
 const unreadCount = computed(() => props.chat.unread_count);
 const hasUnread = computed(() => unreadCount.value > 0);
 const lastMessageInChat = computed(() => getLastMessage(props.chat));
+const showConversationTitle = computed(
+  () => props.inbox.enable_conversation_title && props.chat.title
+);
 
 const voiceCallData = computed(() => {
   const last = lastMessageInChat.value;
@@ -181,10 +184,18 @@ watch(
         </div>
       </div>
       <h4
-        class="conversation--user text-sm my-0 mx-2 capitalize pt-0.5 text-ellipsis overflow-hidden whitespace-nowrap flex-1 min-w-0 ltr:pr-16 rtl:pl-16 text-n-slate-12"
-        :class="hasUnread ? 'font-semibold' : 'font-medium'"
+        class="conversation--user text-sm my-0 mx-2 pt-0.5 text-ellipsis overflow-hidden whitespace-nowrap flex-1 min-w-0 ltr:pr-16 rtl:pl-16 text-n-slate-12"
+        :class="[
+          hasUnread ? 'font-semibold' : 'font-medium',
+          { capitalize: !showConversationTitle },
+        ]"
       >
-        {{ currentContact.name }}
+        <template v-if="showConversationTitle">
+          {{ `${chat.title} · ${currentContact.name}` }}
+        </template>
+        <template v-else>
+          {{ currentContact.name }}
+        </template>
       </h4>
       <VoiceCallStatus
         v-if="voiceCallData.status"

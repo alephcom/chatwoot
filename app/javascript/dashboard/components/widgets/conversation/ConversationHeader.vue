@@ -7,6 +7,7 @@ import BackButton from '../BackButton.vue';
 import InboxName from '../InboxName.vue';
 import MoreActions from './MoreActions.vue';
 import Avatar from 'next/avatar/Avatar.vue';
+import InlineInput from 'dashboard/components-next/inline-input/InlineInput.vue';
 import SLACardLabel from './components/SLACardLabel.vue';
 import ConversationCallButton from './ConversationCallButton.vue';
 import wootConstants from 'dashboard/constants/globals';
@@ -31,7 +32,10 @@ const props = defineProps({
 const { t } = useI18n();
 const store = useStore();
 const route = useRoute();
+const metaSeparator = '•';
 const conversationHeader = ref(null);
+const isEditingTitle = ref(false);
+const titleDraft = ref('');
 const { width } = useElementSize(conversationHeader);
 const { isAWebWidgetInbox } = useInbox();
 
@@ -89,6 +93,10 @@ const inbox = computed(() => {
   return store.getters['inboxes/getInbox'](inboxId);
 });
 
+const showConversationTitle = computed(
+  () => inbox.value?.enable_conversation_title
+);
+
 const hasMultipleInboxes = computed(
   () => store.getters['inboxes/getInboxes'].length > 1
 );
@@ -103,6 +111,32 @@ const copyConversationId = async () => {
     useAlert(t('CONVERSATION.HEADER.COPY_ID_SUCCESS'));
   } catch (error) {
     // error
+  }
+};
+
+const startEditingTitle = () => {
+  titleDraft.value = currentChat.value.title || '';
+  isEditingTitle.value = true;
+};
+
+const cancelEditingTitle = () => {
+  isEditingTitle.value = false;
+};
+
+const saveTitle = async () => {
+  if (!isEditingTitle.value) return;
+
+  isEditingTitle.value = false;
+  const title = titleDraft.value.trim() || null;
+  if (title === (currentChat.value.title || null)) return;
+
+  try {
+    await store.dispatch('updateConversationTitle', {
+      conversationId: currentChat.value.id,
+      title,
+    });
+  } catch (error) {
+    useAlert(t('CONVERSATION.HEADER.TITLE_UPDATE_ERROR'));
   }
 };
 </script>
@@ -129,7 +163,26 @@ const copyConversationId = async () => {
       />
       <div class="flex flex-col items-start min-w-0 ms-2 overflow-hidden">
         <div class="flex flex-row items-center max-w-full gap-1 p-0 m-0">
+          <InlineInput
+            v-if="showConversationTitle && isEditingTitle"
+            v-model="titleDraft"
+            focus-on-mount
+            :placeholder="$t('CONVERSATION.HEADER.ADD_TITLE')"
+            custom-input-class="font-medium leading-tight"
+            @enter-press="saveTitle"
+            @escape-press="cancelEditingTitle"
+            @blur="saveTitle"
+          />
+          <button
+            v-else-if="showConversationTitle"
+            type="button"
+            class="min-w-0 truncate text-sm font-medium leading-tight text-n-slate-12 hover:text-n-brand"
+            @click="startEditingTitle"
+          >
+            {{ currentChat.title || $t('CONVERSATION.HEADER.ADD_TITLE') }}
+          </button>
           <span
+            v-else
             class="text-sm font-medium truncate leading-tight text-n-slate-12"
           >
             {{ currentContact.name }}
@@ -146,6 +199,10 @@ const copyConversationId = async () => {
         <div
           class="flex items-center gap-1 overflow-hidden text-xs conversation--header--actions text-n-slate-11 text-ellipsis whitespace-nowrap"
         >
+          <span v-if="showConversationTitle" class="truncate">
+            {{ currentContact.name }}
+          </span>
+          <span v-if="showConversationTitle">{{ metaSeparator }}</span>
           <button
             type="button"
             class="truncate text-label-small text-n-slate-11 hover:text-n-slate-12 !p-0 cucursor-pointer"
@@ -153,9 +210,9 @@ const copyConversationId = async () => {
           >
             {{ `#${chat.id}` }}
           </button>
-          <span v-if="hasMultipleInboxes">•</span>
+          <span v-if="hasMultipleInboxes">{{ metaSeparator }}</span>
           <InboxName v-if="hasMultipleInboxes" :inbox="inbox" class="!mx-0" />
-          <span v-if="isSnoozed">•</span>
+          <span v-if="isSnoozed">{{ metaSeparator }}</span>
           <span v-if="isSnoozed" class="font-medium text-n-amber-10">
             {{ snoozedDisplayText }}
           </span>

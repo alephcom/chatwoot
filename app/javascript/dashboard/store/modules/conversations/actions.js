@@ -500,6 +500,28 @@ const actions = {
     }
   },
 
+  updateConversationTitle: async (
+    { commit, state },
+    { conversationId, title }
+  ) => {
+    const conversation = state.allConversations.find(
+      item => item.id === conversationId
+    );
+    const previousTitle = conversation?.title ?? null;
+
+    commit(types.UPDATE_CONVERSATION_TITLE, { conversationId, title });
+
+    try {
+      await ConversationApi.updateTitle({ conversationId, title });
+    } catch (error) {
+      commit(types.UPDATE_CONVERSATION_TITLE, {
+        conversationId,
+        title: previousTitle,
+      });
+      throw error;
+    }
+  },
+
   setConversationFilters({ commit }, data) {
     commit(types.SET_CONVERSATION_FILTERS, data);
   },

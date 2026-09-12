@@ -902,6 +902,8 @@
       "UPDATE": "Update",
       "ENABLE_EMAIL_COLLECT_BOX": "Enable email collect box",
       "ENABLE_EMAIL_COLLECT_BOX_SUB_TEXT": "Enable or disable email collect box on new conversation",
+      "ENABLE_CONVERSATION_TITLE": "Enable conversation titles",
+      "ENABLE_CONVERSATION_TITLE_SUB_TEXT": "Let agents add and edit titles for conversations in this inbox. New email conversations use the email subject as their title.",
       "AUTO_ASSIGNMENT": "Enable auto assignment",
       "SENDER_NAME_SECTION": "Enable Agent Name in Email",
       "SENDER_NAME_SECTION_TEXT": "Enable/Disable showing Agent's name in email, if disabled it will show business name",

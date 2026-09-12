@@ -34,6 +34,9 @@ const emit = defineEmits([
 
 const lastMessageInChat = computed(() => getLastMessage(props.chat));
 const showLabelsSection = computed(() => props.chat.labels?.length > 0);
+const showConversationTitle = computed(
+  () => props.inbox.enable_conversation_title && props.chat.title
+);
 
 const voiceCallData = computed(() => {
   const last = lastMessageInChat.value;
@@ -153,9 +156,15 @@ const selectedModel = computed({
       />
 
       <h4
-        class="text-heading-3 my-0 capitalize truncate text-n-slate-12 font-medium w-32 flex-shrink-0"
+        class="text-heading-3 my-0 truncate text-n-slate-12 font-medium flex-shrink-0"
+        :class="showConversationTitle ? 'w-64' : 'w-32 capitalize'"
       >
-        {{ currentContact.name }}
+        <template v-if="showConversationTitle">
+          {{ `${chat.title} · ${currentContact.name}` }}
+        </template>
+        <template v-else>
+          {{ currentContact.name }}
+        </template>
       </h4>
 
       <CardContent

@@ -583,6 +583,54 @@ describe('#deleteMessage', () => {
       ]);
     });
   });
+
+  describe('#updateConversationTitle', () => {
+    const state = {
+      allConversations: [{ id: 1, title: 'Old title' }],
+    };
+
+    it('optimistically updates the conversation title', async () => {
+      axios.patch.mockResolvedValue({ data: { id: 1, title: 'New title' } });
+
+      await actions.updateConversationTitle(
+        { commit, state },
+        { conversationId: 1, title: 'New title' }
+      );
+
+      expect(axios.patch).toHaveBeenCalledWith('/api/v1/conversations/1', {
+        title: 'New title',
+      });
+      expect(commit.mock.calls).toEqual([
+        [
+          types.UPDATE_CONVERSATION_TITLE,
+          { conversationId: 1, title: 'New title' },
+        ],
+      ]);
+    });
+
+    it('rolls back the title when the request fails', async () => {
+      const error = new Error('Request failed');
+      axios.patch.mockRejectedValue(error);
+
+      await expect(
+        actions.updateConversationTitle(
+          { commit, state },
+          { conversationId: 1, title: 'New title' }
+        )
+      ).rejects.toThrow('Request failed');
+
+      expect(commit.mock.calls).toEqual([
+        [
+          types.UPDATE_CONVERSATION_TITLE,
+          { conversationId: 1, title: 'New title' },
+        ],
+        [
+          types.UPDATE_CONVERSATION_TITLE,
+          { conversationId: 1, title: 'Old title' },
+        ],
+      ]);
+    });
+  });
 });
 
 describe('#addMentions', () => {

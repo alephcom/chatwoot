@@ -27,6 +27,7 @@ import VoiceConfigurationPage from './settingsPage/VoiceConfigurationPage.vue';
 import WhatsappCallingPage from './settingsPage/WhatsappCallingPage.vue';
 import CustomerSatisfactionPage from './settingsPage/CustomerSatisfactionPage.vue';
 import CollaboratorsPage from './settingsPage/CollaboratorsPage.vue';
+import ConversationTitleSettings from './settingsPage/ConversationTitleSettings.vue';
 import BotConfiguration from './components/BotConfiguration.vue';
 import AccountHealth from './components/AccountHealth.vue';
 import WhatsappManualMigrationDialog from './components/WhatsappManualMigrationDialog.vue';
@@ -53,6 +54,7 @@ export default {
     Banner,
     BotConfiguration,
     CollaboratorsPage,
+    ConversationTitleSettings,
     ConfigurationPage,
     VoiceConfigurationPage,
     WhatsappCallingPage,
@@ -1308,6 +1310,8 @@ export default {
                   />
                 </template>
               </SettingsToggleSection>
+
+              <ConversationTitleSettings :inbox="inbox" />
 
               <SettingsToggleSection
                 v-if="isAWebWidgetInbox"

@@ -134,6 +134,8 @@
       "CLOSE": "Close",
       "DETAILS": "details",
       "COPY_ID_SUCCESS": "Conversation ID copied to clipboard",
+      "ADD_TITLE": "Add conversation title",
+      "TITLE_UPDATE_ERROR": "Could not update the conversation title. Please try again.",
       "SNOOZED_UNTIL": "Snoozed until",
       "SNOOZED_UNTIL_TOMORROW": "Snoozed until tomorrow",
       "SNOOZED_UNTIL_NEXT_WEEK": "Snoozed until next week",

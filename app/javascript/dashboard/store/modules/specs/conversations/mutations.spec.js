@@ -40,6 +40,19 @@ describe('#mutations', () => {
     });
   });
 
+  describe('#UPDATE_CONVERSATION_TITLE', () => {
+    it('updates the title of the matching conversation', () => {
+      const state = { allConversations: [{ id: 1, title: null }] };
+
+      mutations[types.UPDATE_CONVERSATION_TITLE](state, {
+        conversationId: 1,
+        title: 'Billing question',
+      });
+
+      expect(state.allConversations[0].title).toBe('Billing question');
+    });
+  });
+
   describe('#CLEAR_CURRENT_CHAT_WINDOW', () => {
     it('clears current chat window', () => {
       const state = { selectedChatId: 1 };

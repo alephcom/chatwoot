@@ -10,6 +10,7 @@ describe('#ConversationAPI', () => {
     expect(conversationAPI).toHaveProperty('update');
     expect(conversationAPI).toHaveProperty('delete');
     expect(conversationAPI).toHaveProperty('toggleStatus');
+    expect(conversationAPI).toHaveProperty('updateTitle');
     expect(conversationAPI).toHaveProperty('assignAgent');
     expect(conversationAPI).toHaveProperty('assignTeam');
     expect(conversationAPI).toHaveProperty('markMessageRead');
@@ -87,6 +88,16 @@ describe('#ConversationAPI', () => {
           snoozed_until: null,
         }
       );
+    });
+
+    it('#updateTitle', () => {
+      conversationAPI.updateTitle({
+        conversationId: 12,
+        title: 'Billing question',
+      });
+      expect(axiosMock.patch).toHaveBeenCalledWith('/api/v1/conversations/12', {
+        title: 'Billing question',
+      });
     });
 
     it('#assignAgent', () => {

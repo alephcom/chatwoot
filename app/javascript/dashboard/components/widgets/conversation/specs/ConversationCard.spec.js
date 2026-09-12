@@ -11,7 +11,7 @@ const defaultChat = {
   created_at: 1700000000,
 };
 
-const mountComponent = (chat, currentContact = {}) =>
+const mountComponent = (chat, currentContact = {}, inbox = {}) =>
   shallowMount(ConversationCard, {
     props: {
       chat: { ...defaultChat, ...chat },
@@ -21,7 +21,7 @@ const mountComponent = (chat, currentContact = {}) =>
         availability_status: 'offline',
         ...currentContact,
       },
-      inbox: { id: 1 },
+      inbox: { id: 1, ...inbox },
     },
     global: {
       stubs: {
@@ -56,5 +56,32 @@ describe('ConversationCard', () => {
     );
 
     expect(wrapper.findComponent({ name: 'CardLabels' }).exists()).toBe(false);
+  });
+
+  it('shows the title as the primary line and keeps the contact name', () => {
+    const wrapper = mountComponent(
+      { title: 'Billing question' },
+      {},
+      { enable_conversation_title: true }
+    );
+
+    expect(wrapper.find('h4').text()).toContain('Billing question');
+    expect(wrapper.find('h4').text()).toContain('Jane Doe');
+  });
+
+  it('renders the existing contact line when titles are disabled or blank', () => {
+    const disabledWrapper = mountComponent(
+      { title: 'Billing question' },
+      {},
+      { enable_conversation_title: false }
+    );
+    const blankWrapper = mountComponent(
+      { title: null },
+      {},
+      { enable_conversation_title: true }
+    );
+
+    expect(disabledWrapper.find('h4').text()).toBe('Jane Doe');
+    expect(blankWrapper.find('h4').text()).toBe('Jane Doe');
   });
 });
