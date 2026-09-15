@@ -1,6 +1,9 @@
 #
 # Builds and publishes this fork's CE (enterprise-stripped) docker image to GHCR
-# on every push to the tracked branch, so production can just `docker compose pull`.
+# on every push to master or develop, so production/staging can just `docker compose pull`.
+#
+# master  -> ghcr.io/<repo>:latest   (production)
+# develop -> ghcr.io/<repo>:develop  (staging / soak-testing upcoming changes)
 #
 
 name: Build and Publish Fork Docker Image
@@ -9,6 +12,7 @@ on:
   push:
     branches:
       - master
+      - develop
   workflow_dispatch:
 
 env:
@@ -35,6 +39,14 @@ jobs:
         run: |
           echo -en '\nENV CW_EDITION="ce"' >> docker/Dockerfile
 
+      - name: Set floating tag
+        run: |
+          if [ "${{ github.ref_name }}" = "master" ]; then
+            echo "FLOATING_TAG=latest" >> $GITHUB_ENV
+          else
+            echo "FLOATING_TAG=develop" >> $GITHUB_ENV
+          fi
+
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
@@ -53,5 +65,5 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.FLOATING_TAG }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
